@@ -1,0 +1,49 @@
+name: JS Calculator CI Workflow Test
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  validate-code:
+    name: Code & Syntax Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install HTML & JS Linter
+        run: |
+          npm install -g htmlhint eslint
+
+      - name: Test HTML Structure (HTMLHint)
+        run: |
+          htmlhint js-calculator.html --ignore "doctype-first=off"
+
+      - name: Check Inline JavaScript Syntax
+        run: |
+          node -e "
+            const fs = require('fs');
+            const html = fs.readFileSync('js-calculator.html', 'utf8');
+            const jsMatch = html.match(/<script>([\s\S]*?)<\/script>/);
+            if (jsMatch && jsMatch[1]) {
+              try {
+                new Function(jsMatch[1]);
+                console.log('✅ JavaScript syntax is valid!');
+              } catch (e) {
+                console.error('❌ JavaScript syntax error:', e.message);
+                process.exit(1);
+              }
+            } else {
+              console.error('❌ No <script> block found!');
+              process.exit(1);
+            }
+          "
