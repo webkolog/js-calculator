@@ -36,7 +36,7 @@
 No installation or complex build step required. Simply clone the repository or download `js-calculator.html` and open it directly in any modern browser.
 
 ```bash
-git clone [https://github.com/webkolog/js-calculator.git](https://github.com/webkolog/js-calculator.git)
+git clone https://github.com/webkolog/js-calculator.git
 
 ```
 
